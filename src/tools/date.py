@@ -9,7 +9,8 @@ def _gtime() -> str:
 @tool
 def gtime() -> str:
     """
-    以格式 YYYY-MM-DD HH:MM:SS 获取当前日期时间
+    当用户要求获取当前日期时使用
+    以格式 YYYY-MM-DD HH:MM:SS 输出
     """
     return _gtime()
 
