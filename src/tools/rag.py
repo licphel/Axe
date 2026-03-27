@@ -1,4 +1,4 @@
-from langchain_community.tools import tool
+from util import tool
 from langchain_community.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core import documents
@@ -45,12 +45,17 @@ def _forget(key: str):
     return False
 
 @tool
-def memorize(key: str, info: str):
+def memorize(key: str, info: str) -> str:
     """
     记住一条长期记忆
-    参数:
-        key: 记忆的唯一标识（如 "生日", "名字"）
-        info: 记忆的具体内容
+    
+    输入:
+    {
+      "key": <记忆的唯一标识，统一用中文>
+      "info": <记忆的具体内容>
+    }
+    
+    输出：是否成功
     """
     _memorize(key, info)
     return f"已记住：{key} = {info}"
@@ -59,8 +64,13 @@ def memorize(key: str, info: str):
 def recall(key: str) -> str:
     """
     回忆一条长期记忆
-    参数:
-        key: 要回忆的记忆标识（可以是精确的key，也可以是模糊描述）
+    
+    输入:
+    {
+      "key": <记忆的唯一标识或模糊查询键，统一用中文>
+    }
+    
+    输出：记忆的内容（如果未找到，给出可能的键值对）
     """
     result = _recall_by_key(key)
     if result:
@@ -74,22 +84,32 @@ def recall(key: str) -> str:
     return "没有找到相关记忆"
 
 @tool
-def forget(key: str):
+def forget(key: str) -> str:
     """
     遗忘一条长期记忆
-    参数:
-        key: 要遗忘的记忆标识
+    
+    输入:
+    {
+      "key": <记忆的唯一标识，统一用中文>
+    }
+    
+    输出：是否成功
     """
     if _forget(key):
-        return f"已遗忘：{key}"
+        return f"成功删除：{key}"
     return f"没有找到名为 {key} 的记忆"
 
 @tool
 def search_memory(query: str) -> str:
     """
     搜索相关记忆（模糊查询）
-    参数:
-        query: 搜索关键词
+    
+    输入:
+    {
+      "query": <记忆的模糊查询关键词，统一用中文>
+    }
+    
+    输出：记忆信息（包含键值对）
     """
     results = _recall_by_similarity(query, topk=3)
     if not results:

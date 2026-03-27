@@ -1,5 +1,5 @@
 from datetime import datetime
-from langchain_community.tools import tool
+from util import tool
 
 
 def _cur_time() -> str:
@@ -10,7 +10,12 @@ def _cur_time() -> str:
 def cur_time() -> str:
     """
     当用户要求获取当前日期时使用
-    以格式 YYYY-MM-DD HH:MM:SS 输出
+    
+    输入：
+    {
+    }
+    
+    输出：YYYY-MM-DD HH:MM:SS 
     """
     return _cur_time()
 
