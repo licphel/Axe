@@ -1,2 +1,2 @@
-## LongMR
+## .AXE
 Your AI agent assistant.
