@@ -1,1 +1,2 @@
-## LongMR: Long-term Memory AI assistant
+## LongMR
+Your AI agent assistant.

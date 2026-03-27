@@ -1,6 +1,6 @@
 from langchain_community.tools import tool
 from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core import documents
 from .date import _cur_time
 
