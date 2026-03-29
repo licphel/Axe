@@ -7,7 +7,7 @@ import json
 import re
 
 # set envvar from local api_key.txt
-os.environ["DEEPSEEK_API_KEY"] = rstr("./api_key.txt")
+os.environ["DEEPSEEK_API_KEY"] = read("./api_key.txt")
 
 model = ChatDeepSeek(model="deepseek-chat")
 
@@ -19,7 +19,7 @@ for v in tools:
     tool_map[v.__name__] = v
     tool_descs += v.doc
 
-prompt_sys_init = rstr("prompts/sys_init.md")
+prompt_sys_init = read("prompts/react.md")
 show_all = False
 
 
@@ -39,6 +39,14 @@ def ReAct_loop(query: str) -> str:
         {"role": "user", "content": query},
     ]
 
+    # RAG
+    context = recall(query)
+    if context != "没有找到相关记忆":
+        messages.append({"role": "system", "content": f"参考历史记忆：\n{context}\n\n"})
+        if show_all:
+          debug("=== RAG result: ===")
+          debug(messages[-1])
+
     step = 0
     max_steps = 10
 
@@ -46,6 +54,7 @@ def ReAct_loop(query: str) -> str:
         response = model.invoke(messages).content
 
         if show_all:
+            debug("=== model response: ===")
             debug(response)
 
         try:
@@ -70,10 +79,13 @@ def ReAct_loop(query: str) -> str:
                     observation = f"Action failed：{e}"
 
             messages.append({"role": "assistant", "content": str(response)})
-            messages.append({"role": "user", "content": f"Observation: {observation}"})
-            step += 1
+            messages.append({"role": "system", "content": f"Observation: {observation}"})
             
-            data["Final Answer"] = "" # clear answer
+            if show_all:
+              debug("=== action invoked! ===")
+              debug(response)
+            
+            step += 1
             continue
 
         if data.get("Final Answer"):

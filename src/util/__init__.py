@@ -1,2 +1,2 @@
-from .promptr import *
+from .read import *
 from .wrapper import *
